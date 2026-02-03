@@ -220,46 +220,88 @@ def show():
     df_import, df_tariff = load_all_combined_data()
     df_reg = get_regulation_db()
     
+    # ==========================================
+    # 사이드바 - 필터 옵션
+    # ==========================================
+    with st.sidebar:
+        st.markdown("#### 📊 수입 통계 필터")
+        year_opts = ["10개년 평균"] + sorted(df_import[df_import['Year'] != "10개년 평균"]['Year'].unique().tolist(), reverse=True)
+        selected_year = st.selectbox("📅 분석 연도 선택", options=year_opts, index=0, key="strategy_year_filter")
+        selected_region = st.multiselect("📍 대륙 선택", ["남미", "아시아", "아프리카"], default=["남미", "아시아", "아프리카"], key="strategy_region_filter")
+    
     tab1, tab2, tab3, tab4 = st.tabs(["📊 수입 트렌드", "🧾 FTA & 관세", "🛡️ 규제 리스크", "🌍 공급망 리밸런싱"])
 
     # TAB 1: 수입 트렌드
     with tab1:
         st.subheader("📊 10개년 수입 데이터 분석")
         
-        col1, col2 = st.columns([1.5, 1])
-        with col1:
-            selected_year = st.selectbox("연도 선택", ["10개년 평균"] + [str(y) for y in range(2025, 2015, -1)], key="strategy_year")
-        with col2:
-            view_metric = st.radio("지표 선택", ["수입량 (톤)", "수입액 (백만$)"], horizontal=True, key="strategy_metric")
+        # 사이드바 필터 적용
+        f_import = df_import[(df_import['Year'] == selected_year) & (df_import['Region'].isin(selected_region))]
+        
+        view_metric = st.radio("지표 선택", ["수입량 (톤)", "수입액 (백만$)"], horizontal=True, key="strategy_metric")
         
         value_col = "Import_Qty" if "톤" in view_metric else "Value_USD"
-        filtered_df = df_import[df_import['Year'] == selected_year]
         
-        fig = px.bar(
-            filtered_df.sort_values(value_col, ascending=False),
-            x='Country', y=value_col, color='Region',
-            color_discrete_sequence=COFFEE_PALETTE,
-            title=f"{selected_year} 국가별 {view_metric}"
-        )
-        fig.update_layout(plot_bgcolor='rgba(0,0,0,0)')
-        st.plotly_chart(fig, use_container_width=True)
+        # 메트릭 카드
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("총 수입량", f"{f_import['Import_Qty'].sum():,.1f} ton")
+        m2.metric("주요 수입국", f_import.sort_values("Import_Qty", ascending=False).iloc[0]['Country'] if not f_import.empty else "-")
+        m3.metric("총 수입액", f"${f_import['Value_USD'].sum():,.1f}M")
+        m4.metric("분석 국가", f"{len(f_import)}개국")
+        
+        st.markdown("---")
+        
+        c1, c2 = st.columns([1.5, 1])
+        with c1:
+            st.markdown(f"#### 🌍 {selected_year} 국가별 커피 생두 수입 비중")
+            fig = px.pie(f_import, values='Import_Qty', names='Country', hole=0.6, color_discrete_sequence=COFFEE_PALETTE)
+            fig.update_traces(textinfo='percent+label')
+            fig.update_layout(margin=dict(t=20, b=20, l=0, r=0))
+            st.plotly_chart(fig, use_container_width=True)
+        with c2:
+            st.markdown(f"#### 📊 {selected_year} 실측 데이터")
+            st.dataframe(
+                f_import[['Country', 'Import_Qty', 'Value_USD', 'Region']].sort_values("Import_Qty", ascending=False),
+                hide_index=True, use_container_width=True
+            )
 
     # TAB 2: FTA & 관세
     with tab2:
         st.subheader("🧾 FTA 협정 및 관세 현황")
         
-        selected_region = st.selectbox("대륙 필터", ["전체"] + df_tariff['대륙'].unique().tolist(), key="strategy_region")
+        # 사이드바 필터 적용
+        f_tariff = df_tariff[df_tariff['대륙'].isin(selected_region)] if selected_region else df_tariff
         
-        display_df = df_tariff if selected_region == "전체" else df_tariff[df_tariff['대륙'] == selected_region]
+        # 공급망 권고안
+        st.markdown("### 🔍 공급망 권고안")
+        sl, sr = st.columns(2)
+        with sl:
+            st.markdown(f"""
+                <div style="background-color:#F0F4F0; border-top: 6px solid {COLOR_SAFE}; padding: 20px; border-radius: 10px;">
+                    <h4 style="color:{COLOR_SAFE}; margin-top:0;">🛡️ 안정적 파트너 (FTA 그룹)</h4>
+                    <p><b>해당 국가:</b> 온두라스, 코스타리카, 콜롬비아, 페루, 에티오피아, 베트남, 인도네시아</p>
+                    <p>FTA 또는 특혜 관세가 확정되어 <b>관세 0% 영구 보장</b>. 장기 계약 및 주력 산지로 운용 권장.</p>
+                </div>
+            """, unsafe_allow_html=True)
+        with sr:
+            st.markdown(f"""
+                <div style="background-color:#FFF8F0; border-top: 6px solid {COLOR_WARNING}; padding: 20px; border-radius: 10px;">
+                    <h4 style="color:{COLOR_WARNING}; margin-top:0;">⚡ 기회 포착 파트너 (할당관세 그룹)</h4>
+                    <p><b>해당 국가:</b> 과테말라, 브라질, 케냐</p>
+                    <p>한시적 할당관세 0% 혜택 중. 정책 유효 기간 내 <b>최대 물량 선점</b> 전략 권장.</p>
+                </div>
+            """, unsafe_allow_html=True)
+
+        st.markdown("---")
         
-        st.dataframe(
-            display_df.style.applymap(
-                lambda x: 'background-color: #E8F5E9' if x == "0" else '', 
-                subset=['FTA세율']
-            ),
-            use_container_width=True,
-            hide_index=True
-        )
+        k1, k2, k3, k4 = st.columns(4)
+        k1.metric("분석 국가", f"{len(f_tariff)}개국")
+        k2.metric("FTA 체결국", f"{len(f_tariff[f_tariff['FTA세율'] != '미체결'])}개")
+        k3.metric("평균 최종세율", f"{f_tariff['최종세율'].mean():.1f}%")
+        k4.metric("최고 기본세율", f"{f_tariff['기본세율'].max()}%")
+        
+        st.markdown(f"#### 📋 {', '.join(selected_region) if selected_region else '전체'} 국가 관세 현황")
+        st.dataframe(f_tariff, use_container_width=True, hide_index=True)
 
     # TAB 3: 규제 리스크
     with tab3:

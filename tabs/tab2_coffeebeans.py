@@ -376,9 +376,8 @@ def show():
     
     data = get_coffee_data()
     
-    # 사이드바 (메인 네비게이션 아래에 추가 옵션)
+    # 사이드바 - 환율 설정 및 국가 선택
     with st.sidebar:
-        st.markdown("---")
         st.header("💰 환율 설정")
         
         if 'exchange_source_tab2' not in st.session_state:

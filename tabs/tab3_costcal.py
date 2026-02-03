@@ -41,7 +41,6 @@ def show():
 
     # 사이드바: 환율 설정
     with st.sidebar:
-        st.markdown("---")
         st.header("💰 환율 설정")
         
         if 'exchange_source_tab3' not in st.session_state:
