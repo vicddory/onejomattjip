@@ -201,42 +201,62 @@ def get_ai_compliance_summary(country):
 # --- 7. OpenAI 기반 기후 트렌드 분석 (FAQ4.py) ---
 @st.cache_data(show_spinner=False)
 def get_ai_rebalancing_data():
-    if not api_key: 
-        return None
-    
-    client = OpenAI(api_key=api_key)
-    
-    target_countries = [
-        "브라질", "베트남", "인도네시아", "온두라스", "과테말라", 
-        "페루", "콜롬비아", "코스타리카", "에티오피아", "케냐",
-        "우간다", "탄자니아", "중국(윈난)"
+    # Fallback 데이터 (API 실패 시 사용)
+    fallback_data = [
+        {"Country": "브라질", "Region": "남미", "Annual_Trend": -2.5, "Type": "Risk", "Reason": "아마존 산림 파괴와 기온 상승으로 저지대 농장의 생산성이 급격히 감소합니다."},
+        {"Country": "베트남", "Region": "아시아", "Annual_Trend": -2.0, "Type": "Risk", "Reason": "몬순 패턴 변화와 극심한 가뭄으로 로부스타 생산량이 위협받고 있습니다."},
+        {"Country": "인도네시아", "Region": "아시아", "Annual_Trend": -2.8, "Type": "Risk", "Reason": "열대우림 감소와 이탄지 고갈로 지속가능한 생산 기반이 약화되고 있습니다."},
+        {"Country": "온두라스", "Region": "중미", "Annual_Trend": -1.8, "Type": "Risk", "Reason": "허리케인 빈도 증가와 커피 녹병 확산으로 수확량이 불안정합니다."},
+        {"Country": "과테말라", "Region": "중미", "Annual_Trend": -1.5, "Type": "Risk", "Reason": "강수량 변동성 증가로 전통적 재배지역의 품질 저하가 우려됩니다."},
+        {"Country": "페루", "Region": "남미", "Annual_Trend": 0.2, "Type": "Stable", "Reason": "안데스 고산지대의 미세기후 덕분에 상대적으로 안정적 생산이 가능합니다."},
+        {"Country": "콜롬비아", "Region": "남미", "Annual_Trend": -0.3, "Type": "Stable", "Reason": "다양한 고도의 재배지역 분산으로 기후 리스크를 일부 완화하고 있습니다."},
+        {"Country": "코스타리카", "Region": "중미", "Annual_Trend": 0.1, "Type": "Stable", "Reason": "친환경 재배 정책과 고품질 스페셜티 중심 전략으로 안정성을 유지합니다."},
+        {"Country": "에티오피아", "Region": "아프리카", "Annual_Trend": 1.5, "Type": "Opportunity", "Reason": "고산지대 확장 가능성과 원산지 유전자 다양성이 기회 요인입니다."},
+        {"Country": "케냐", "Region": "아프리카", "Annual_Trend": 1.3, "Type": "Opportunity", "Reason": "케냐산 고지대는 온난화로 인해 재배 적지가 확대되고 있습니다."},
+        {"Country": "우간다", "Region": "아프리카", "Annual_Trend": 1.8, "Type": "Opportunity", "Reason": "빅토리아 호수 주변 미세기후와 신규 고산지 개발이 활발합니다."},
+        {"Country": "탄자니아", "Region": "아프리카", "Annual_Trend": 3.2, "Type": "Next Frontier", "Reason": "킬리만자로 고지대의 최적 기후 조건과 미개발 잠재력이 폭발적입니다."},
+        {"Country": "중국(윈난)", "Region": "아시아", "Annual_Trend": 3.8, "Type": "Next Frontier", "Reason": "정부 주도 기술 투자와 고산지대 확장으로 차세대 공급원으로 급부상 중입니다."}
     ]
     
-    prompt = f"""
-    당신은 기후 위기 시나리오(RCP 8.5)를 분석하는 데이터 과학자입니다. 
-    다음 13개국의 2050년까지 커피 생산성 변화를 분석하세요: {target_countries}
+    if not api_key:
+        return fallback_data
     
-    [결과 가이드라인]
-    1. 브라질, 베트남, 인도네시아, 온두라스, 과테말라: Risk (연간 -1.5% ~ -3.5%)
-    2. 페루, 콜롬비아, 코스타리카: Stable (연간 -0.5% ~ +0.5%)
-    3. 에티오피아, 케냐, 우간다: Opportunity (연간 +1.0% ~ +2.0%)
-    4. 탄자니아, 중국(윈난): Next Frontier (연간 +2.5% ~ +4.5%)
-    
-    반드시 다음 JSON 형식으로만 출력하세요:
-    [
-        {{"Country": "국가명", "Region": "지역", "Annual_Trend": 숫자, "Type": "Risk/Stable/Opportunity/Next Frontier", "Reason": "설명"}}
-    ]
-    """
-
     try:
+        client = OpenAI(api_key=api_key)
+        
+        target_countries = [
+            "브라질", "베트남", "인도네시아", "온두라스", "과테말라", 
+            "페루", "콜롬비아", "코스타리카", "에티오피아", "케냐",
+            "우간다", "탄자니아", "중국(윈난)"
+        ]
+        
+        prompt = f"""
+        당신은 기후 위기 시나리오(RCP 8.5)를 분석하는 데이터 과학자입니다. 
+        다음 13개국의 2050년까지 커피 생산성 변화를 분석하세요: {target_countries}
+        
+        [결과 가이드라인]
+        1. 브라질, 베트남, 인도네시아, 온두라스, 과테말라: Risk (연간 -1.5% ~ -3.5%)
+        2. 페루, 콜롬비아, 코스타리카: Stable (연간 -0.5% ~ +0.5%)
+        3. 에티오피아, 케냐, 우간다: Opportunity (연간 +1.0% ~ +2.0%)
+        4. 탄자니아, 중국(윈난): Next Frontier (연간 +2.5% ~ +4.5%)
+        
+        반드시 다음 JSON 형식으로만 출력하세요:
+        [
+            {{"Country": "국가명", "Region": "지역", "Annual_Trend": 숫자, "Type": "Risk/Stable/Opportunity/Next Frontier", "Reason": "설명"}}
+        ]
+        """
+
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "system", "content": "JSON format only."}, {"role": "user", "content": prompt}],
-            temperature=0.7
+            temperature=0.7,
+            max_tokens=2000
         )
-        return json.loads(response.choices[0].message.content)
-    except:
-        return None
+        result = json.loads(response.choices[0].message.content)
+        return result if result else fallback_data
+    except Exception as e:
+        st.warning(f"AI 분석 중 오류 발생: {str(e)}. Fallback 데이터를 사용합니다.")
+        return fallback_data
 
 # --- 8. 데이터 시뮬레이션 엔진 (FAQ4.py) ---
 def run_rebalancing_sim(ai_data, target_year):
@@ -441,14 +461,17 @@ with tab4:
     st.markdown(f"<h2 style='text-align: left;'>🌍 AI 기반 지정학적 공급망 리밸런싱</h2>", unsafe_allow_html=True)
     st.caption("OpenAI RCP 8.5 시나리오 분석: 2025년 대비 미래 산지 생산성 변화 예측")
 
-    # 데이터 로드
+    # 데이터 로드 (session_state 사용)
     if 'rebalance_db' not in st.session_state:
         with st.spinner("🤖 AI가 글로벌 기후 시나리오를 시뮬레이션 중입니다..."):
             raw_ai = get_ai_rebalancing_data()
             if raw_ai: 
                 st.session_state['rebalance_db'] = raw_ai
+            else:
+                st.error("데이터를 불러올 수 없습니다. API 키를 확인해주세요.")
+                st.stop()
 
-    if 'rebalance_db' in st.session_state:
+    if 'rebalance_db' in st.session_state and st.session_state['rebalance_db']:
         st.write("")
         st.markdown("### 📅 예측 시점 설정 (Time Machine)")
         selected_year_tab4 = st.slider("연도를 조절하여 공급망의 구조적 변화를 추적하세요", 2025, 2050, 2050, step=1)
@@ -478,7 +501,15 @@ with tab4:
 
         with col_sel:
             st.markdown(f"### 🎯 {selected_year_tab4} 전략 국가 심층 분석")
-            target = st.selectbox("리포트를 확인할 국가를 선택하세요", df_re['Country'].tolist(), index=12)
+            
+            # 안전한 기본 인덱스 설정
+            default_index = min(12, len(df_re) - 1) if len(df_re) > 0 else 0
+            
+            target = st.selectbox(
+                "리포트를 확인할 국가를 선택하세요", 
+                df_re['Country'].tolist(), 
+                index=default_index
+            )
             c_info = df_re[df_re['Country'] == target].iloc[0]
             
             status_theme = {
@@ -520,6 +551,8 @@ with tab4:
                     </div>
                 </div>
             """, unsafe_allow_html=True)
+    else:
+        st.error("⚠️ 데이터를 불러올 수 없습니다. .env 파일에 OPEN_API_KEY를 설정했는지 확인해주세요.")
 
 # --- Footer ---
 st.markdown("---")
