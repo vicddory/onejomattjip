@@ -557,3 +557,4 @@ with tab4:
 # --- Footer ---
 st.markdown("---")
 st.caption("© 2026 무역 AX 마스터 1기 원조맛집 | Data: 관세청 10개년 실측 통계 + OpenAI Scenario Engine")
+# fgdfgfdgdfggfg
