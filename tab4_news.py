@@ -187,12 +187,23 @@ tab1, tab2, tab3 = st.tabs(["🔥 글로벌 리스크", "🌍 산지별 동향",
 # --- [Tab 1] 글로벌 리스크 (Google) ---
 with tab1:
     st.subheader("글로벌 공급망 & 정책 리스크")
-    if st.button("리스크 뉴스 검색 (Google)", key="btn_risk"):
-        with st.spinner('해외 뉴스 데이터 분석 중...'):
+    
+    # 🔥 [수정] 데이터가 비어있으면(첫 실행 시) 자동으로 검색 실행
+    if not st.session_state['risk_news']:
+        with st.spinner('최신 글로벌 리스크 뉴스를 자동으로 분석 중입니다...'):
             q = "Coffee Supply Chain OR EUDR Regulation OR Red Sea Logistics"
             targets = ["Coffee", "EUDR", "Red Sea", "Supply", "Logistics", "Price", "Regulation"]
             st.session_state['risk_news'] = fetch_google_news(q, targets, period='365d')
-            
+
+    # 🔥 [수정] 수동 새로고침 버튼 (이미 데이터가 있어도 강제로 다시 불러옴)
+    if st.button("🔄 뉴스 새로고침", key="btn_risk_refresh"):
+        with st.spinner('데이터를 다시 분석 중...'):
+            q = "Coffee Supply Chain OR EUDR Regulation OR Red Sea Logistics"
+            targets = ["Coffee", "EUDR", "Red Sea", "Supply", "Logistics", "Price", "Regulation"]
+            st.session_state['risk_news'] = fetch_google_news(q, targets, period='365d')
+            st.rerun() # 화면 즉시 갱신
+
+    # 뉴스 출력 로직
     if st.session_state['risk_news']:
         display_wordcloud(st.session_state['risk_news'])
         st.divider()
