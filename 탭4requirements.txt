@@ -1,0 +1,11 @@
+streamlit
+feedparser
+pandas
+deep_translator
+newspaper3k
+nltk
+textblob
+wordcloud
+matplotlib.pyplot
+requests
+re 
