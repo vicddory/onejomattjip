@@ -229,16 +229,16 @@ def render_news_item(item: Dict, index: int, tab_key: str, show_summary: bool = 
     """뉴스 항목 렌더링 (이미지 제거, 텍스트 중심)"""
     with st.container():
         st.markdown(f"### {index + 1}. {item['감성']} {item['제목']}")
-        st.caption(f"📅 {item['게시일']}")
+        st.caption(f"{item['게시일']}")
         
         # 원제 표시 (영문 기사만)
         if '원제' in item:
-            st.caption(f"🔗 원제: _{item['원제']}_")
+            st.caption(f"원제: _{item['원제']}_")
         
         # 버튼 영역
         col_btn1, col_btn2, col_btn3 = st.columns([1, 1, 2])
         with col_btn1:
-            st.link_button("📰 기사 보기", item['링크'], use_container_width=True)
+            st.link_button("기사 보기", item['링크'], use_container_width=True)
     
         
         st.divider()
@@ -250,12 +250,12 @@ def search_with_progress(search_func, label: str, *args, **kwargs):
     status_text = st.empty()
     
     # 단계 1: RSS 파싱
-    status_text.text(f"🔍 {label} - RSS 피드 파싱 중...")
+    status_text.text(f"{label} - RSS 피드 파싱 중...")
     progress_bar.progress(20)
     time.sleep(0.2)
     
     # 단계 2: 수집 시작
-    status_text.text(f"📰 {label} - 뉴스 수집 및 필터링 중...")
+    status_text.text(f"{label} - 뉴스 수집 및 필터링 중...")
     progress_bar.progress(40)
     
     # 실제 검색 실행
@@ -263,12 +263,12 @@ def search_with_progress(search_func, label: str, *args, **kwargs):
     
     # 단계 3: 처리 완료
     progress_bar.progress(70)
-    status_text.text(f"🌐 {label} - 번역 및 감성 분석 완료 ({len(results)}건 수집)...")
+    status_text.text(f"{label} - 번역 및 감성 분석 완료 ({len(results)}건 수집)...")
     time.sleep(0.2)
     
     # 단계 4: 완료
     progress_bar.progress(100)
-    status_text.text(f"✅ {label} - 검색 완료!")
+    status_text.text(f"{label} - 검색 완료!")
     time.sleep(0.3)
     
     progress_bar.empty()
@@ -283,8 +283,10 @@ def search_with_progress(search_func, label: str, *args, **kwargs):
 def show():
     """뉴스 인사이트 페이지를 렌더링합니다."""
     
-    st.markdown("<h1 style='text-align: center;'>☕ 글로벌 & 로컬 커피 인사이트</h1>", unsafe_allow_html=True)
-    st.divider()
+    st.markdown("<h1 style='text-align: center;'>뉴스 큐레이션</h1>", unsafe_allow_html=True)
+    st.markdown(" ")
+    st.markdown(" ")
+    st.markdown(" ")
 
     # 세션 상태 초기화
     if 'risk_news' not in st.session_state:
@@ -294,7 +296,7 @@ def show():
     if 'korea_news' not in st.session_state:
         st.session_state['korea_news'] = []
 
-    tab1, tab2, tab3 = st.tabs(["🌍 글로벌 리스크", "🌱 산지별 동향", "🇰🇷 국내 시장"])
+    tab1, tab2, tab3 = st.tabs(["글로벌 리스크", "산지별 동향", "국내 시장"])
 
     # ===========================================
     # Tab 1: 글로벌 리스크 (버그 수정)
@@ -303,7 +305,7 @@ def show():
         st.subheader("글로벌 공급망 & 정책 리스크")
         st.markdown("EUDR 규제, 홍해 물류 위기, 공급망 리스크 등 커피 산업에 영향을 미치는 글로벌 이슈를 추적합니다.")
         
-        if st.button("🔍 리스크 뉴스 검색", key="btn_risk", use_container_width=True):
+        if st.button("리스크 뉴스 검색", key="btn_risk", use_container_width=True):
             # 검색 쿼리 및 키워드 정의
             q = "Coffee Supply Chain OR EUDR Regulation OR Red Sea Logistics OR Coffee Price"
             targets = ["Coffee", "EUDR", "Red Sea", "Supply", "Logistics", "Price", "Regulation"]
@@ -318,10 +320,10 @@ def show():
             )
                 
         if st.session_state['risk_news']:
-            st.success(f"☕ **최신 커피 뉴스 TOP {len(st.session_state['risk_news'][:10])}**")
+            st.success(f"**최신 커피 뉴스 TOP {len(st.session_state['risk_news'][:10])}**")
             
             # 워드클라우드 표시
-            with st.expander("📊 키워드 워드클라우드 보기"):
+            with st.expander("키워드 워드클라우드 보기"):
                 display_wordcloud(st.session_state['risk_news'])
             
             st.divider()
@@ -355,7 +357,7 @@ def show():
             else:
                 return f'"{c} Coffee" (Export OR Price)', [c, "Coffee"]
 
-        if st.button(f"🔍 {country} 뉴스 검색", key="btn_origin", use_container_width=True):
+        if st.button(f"{country} 뉴스 검색", key="btn_origin", use_container_width=True):
             query, targets = get_params(country)
             st.session_state['origin_news'] = search_with_progress(
                 fetch_google_news,
@@ -366,10 +368,10 @@ def show():
             )
                 
         if st.session_state['origin_news']:
-            st.success(f"☕ **최신 커피 뉴스 TOP {len(st.session_state['origin_news'][:10])}**")
+            st.success(f"**최신 커피 뉴스 TOP {len(st.session_state['origin_news'][:10])}**")
             
             # 워드클라우드 표시
-            with st.expander("📊 키워드 워드클라우드 보기"):
+            with st.expander("키워드 워드클라우드 보기"):
                 display_wordcloud(st.session_state['origin_news'])
             
             st.divider()
@@ -395,7 +397,7 @@ def show():
             key="korea_keyword"
         )
         
-        if st.button("🔍 국내 뉴스 검색 (Naver API)", key="btn_korea", use_container_width=True):
+        if st.button("국내 뉴스 검색 (Naver API)", key="btn_korea", use_container_width=True):
             st.session_state['korea_news'] = search_with_progress(
                 fetch_naver_news_api,
                 "국내 뉴스",
@@ -403,13 +405,13 @@ def show():
             )
                 
         if st.session_state['korea_news']:
-            st.success(f"☕ **최신 커피 뉴스 TOP {len(st.session_state['korea_news'])}**")
+            st.success(f"**최신 커피 뉴스 TOP {len(st.session_state['korea_news'])}**")
             
             for i, item in enumerate(st.session_state['korea_news']):
                 with st.container():
                     st.markdown(f"### {i + 1}. {item['제목']}")
-                    st.caption(f"📅 {item['게시일']} | 📌 {item['언론사']}")
-                    st.link_button("📰 기사 원문 읽기", item['링크'], use_container_width=True)
+                    st.caption(f"{item['게시일']} | {item['언론사']}")
+                    st.link_button("기사 원문 읽기", item['링크'], use_container_width=True)
                     st.divider()
 
 

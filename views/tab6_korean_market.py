@@ -64,8 +64,7 @@ def show():
     st.markdown("<h1 style='text-align: center;'>국내 원두 수입 동향</h1>", unsafe_allow_html=True)
     st.markdown(" ")
     st.markdown(" ")
-    st.markdown(" ")
-
+    
     # 1. 수입 규모 분석
     st.markdown('<h3 style="border-bottom: 3px solid #00695C; padding-bottom: 8px; color:#6F4E37;">수입 규모 (수입량 & 수입액)</h3>', unsafe_allow_html=True)
     

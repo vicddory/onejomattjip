@@ -81,12 +81,24 @@ def apply_global_styles():
 
         /* ===========================================
            5. 탭 스타일
-           =========================================== */
+        =========================================== */
+        /* 1. 모든 탭의 기본 글자 크기 설정 */
+        .stTabs [data-baseweb="tab"] p {
+            font-size: 1.2rem !important;  /* 기존보다 크게 설정 (원하는 수치로 조절 가능) */
+            font-weight: 500 !important;
+        }
+
+        /* 2. 선택된 탭의 스타일 강조 */
+        .stTabs [aria-selected="true"] p {
+            font-weight: 800 !important;   /* 선택된 탭은 더 두껍게 */
+            color: #00695C !important;     /* 테마 색상 적용 */
+        }
+
+        /* 3. 선택된 탭 하단 라인 색상 */
         .stTabs [aria-selected="true"] {
-            font-weight: 700 !important;
-            color: #00695C !important;
             border-bottom-color: #00695C !important;
         }
+
 
         /* ===========================================
            6. 헤더 스타일
