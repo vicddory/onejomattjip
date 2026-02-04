@@ -72,7 +72,7 @@ def show():
                     st.error(msg)
     
     with col2:
-        st.markdown("##### ✏️ 환율 수동 설정")
+        st.markdown("#####  환율 수동 설정")
         
         # 환율 수동 입력
         manual_rate = st.number_input(
@@ -163,7 +163,7 @@ def show():
 
         # 결과 화면
         st.divider()
-        st.subheader(f"📊 [{selected_code}] 최종 원가 분석")
+        st.subheader(f" [{selected_code}] 최종 원가 분석")
         
         k1, k2, k3 = st.columns(3)
         k1.metric(" 총 필요 자금", f"{int(total_krw):,} 원", delta="Total Cost")
