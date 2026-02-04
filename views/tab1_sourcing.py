@@ -582,33 +582,37 @@ def show():
     }
     signal_color = signal_colors.get(algo_signal['signal_status'], '#6B7280')
     
-    # 트리거 리스트 생성
-    triggers_html = '<ul style="margin: 0.5rem 0; padding-left: 1.5rem;">'
-    for trigger in algo_signal['logic_triggers']:
-        triggers_html += f'<li style="margin: 0.25rem 0;">{trigger}</li>'
-    triggers_html += '</ul>'
-    
-    st.markdown(f"""
-    <div class="summary-box">
-        <h4 style="color: {COLOR_PRIMARY}; margin-top: 0;">시장 상황 분석</h4>
-        <p style="color: #555; line-height: 1.6;">{algo_signal['market_context']}</p>
+    # Streamlit 네이티브 컴포넌트로 렌더링
+    with st.container():
+        st.markdown(f"""
+        <div style="background: white; padding: 2rem; border-radius: 12px; border: 1px solid #E0E0E0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <h4 style="color: {COLOR_PRIMARY}; margin-top: 0;">시장 상황 분석</h4>
+            <p style="color: #555; line-height: 1.6;">{algo_signal['market_context']}</p>
+        </div>
+        """, unsafe_allow_html=True)
         
-        <div class="signal-badge" style="border-left: 4px solid {signal_color};">
+        # 시그널 배지
+        st.markdown(f"""
+        <div style="background: #F5F5F5; padding: 1rem; border-radius: 8px; border-left: 4px solid {signal_color}; margin: 1rem 0;">
             <strong style="font-size: 1.1rem;">시그널: {algo_signal['signal_emoji']} {algo_signal['signal_status']}</strong>
             <br>
             <span style="color: #666;">강도: {algo_signal['signal_strength']}/100</span>
         </div>
+        """, unsafe_allow_html=True)
         
-        <h5 style="color: {COLOR_PRIMARY}; margin-top: 1.5rem; margin-bottom: 0.5rem;">로직 트리거:</h5>
-        {triggers_html}
+        # 로직 트리거
+        st.markdown(f"<h5 style='color: {COLOR_PRIMARY}; margin-top: 1.5rem; margin-bottom: 0.5rem;'>로직 트리거:</h5>", unsafe_allow_html=True)
+        for trigger in algo_signal['logic_triggers']:
+            st.markdown(f"- {trigger}")
         
-        <div class="action-box" style="background: linear-gradient(135deg, {signal_color}15 0%, {signal_color}08 100%); border-left: 4px solid {signal_color}; margin-top: 1.5rem;">
+        # CPO 실행 권고
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, {signal_color}15 0%, {signal_color}08 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid {signal_color}; margin-top: 1.5rem;">
             <strong style="color: {signal_color}; font-size: 1.05rem;">💡 CPO 실행 권고사항:</strong>
             <br><br>
             <p style="margin: 0; color: #333; line-height: 1.6;">{algo_signal['cpo_action']}</p>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
     
     st.caption(f"📅 Last Updated: {market_data['last_updated']}")
 
