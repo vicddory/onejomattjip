@@ -216,7 +216,7 @@ def show():
             st.table(docs_df)
             
         else:
-            st.info("👆 지도에서 생산국 핀을 클릭하세요.")
+            st.info(" 지도에서 생산국 핀을 클릭하세요.")
 
 
 # 모듈 직접 실행 시 (테스트용)
