@@ -73,16 +73,16 @@ def load_import_data():
 def load_tariff_data():
     """관세 데이터"""
     dummy_tariff = [
-        ["남미", "과테말라", 901.11, "생두", 2, "미체결", 0, 0, "🌟 한-중미 FTA 협상 중! 현재 할당관세 0%"],
-        ["남미", "온두라스", 901.11, "생두", 2, "0", 0, 0, "✅ 한-중미 FTA 체결국"],
-        ["남미", "코스타리카", 901.11, "생두", 2, "0", 0, 0, "✅ 한-중미 FTA 체결국"],
-        ["남미", "콜롬비아", 901.11, "생두", 2, "0", 0, 0, "✅ 한-콜롬비아 FTA"],
-        ["남미", "페루", 901.11, "생두", 2, "0", 0, 0, "✅ 한-페루 FTA"],
-        ["남미", "브라질", 901.11, "생두", 2, "미체결", 0, 0, "🌟 현재 할당관세 0%"],
-        ["아프리카", "케냐", 901.11, "생두", 2, "미체결", 0, 0, "🌟 프리미엄 산지! 할당관세 혜택"],
-        ["아프리카", "에티오피아", 901.11, "생두", 2, "0", 0, 0, "🕊️ 최빈개발국 특례 0%"],
-        ["아시아", "베트남", 901.11, "생두", 2, "0", 0, 0, "✅ 한-아세안 FTA"],
-        ["아시아", "인도네시아", 901.11, "생두", 2, "0", 0, 0, "✅ 한-아세안 FTA 및 CEPA"]
+        ["남미", "과테말라", 901.11, "생두", 2, "미체결", 0, 0, " 한-중미 FTA 협상 중! 현재 할당관세 0%"],
+        ["남미", "온두라스", 901.11, "생두", 2, "0", 0, 0, " 한-중미 FTA 체결국"],
+        ["남미", "코스타리카", 901.11, "생두", 2, "0", 0, 0, " 한-중미 FTA 체결국"],
+        ["남미", "콜롬비아", 901.11, "생두", 2, "0", 0, 0, " 한-콜롬비아 FTA"],
+        ["남미", "페루", 901.11, "생두", 2, "0", 0, 0, " 한-페루 FTA"],
+        ["남미", "브라질", 901.11, "생두", 2, "미체결", 0, 0, " 현재 할당관세 0%"],
+        ["아프리카", "케냐", 901.11, "생두", 2, "미체결", 0, 0, " 프리미엄 산지! 할당관세 혜택"],
+        ["아프리카", "에티오피아", 901.11, "생두", 2, "0", 0, 0, " 최빈개발국 특례 0%"],
+        ["아시아", "베트남", 901.11, "생두", 2, "0", 0, 0, " 한-아세안 FTA"],
+        ["아시아", "인도네시아", 901.11, "생두", 2, "0", 0, 0, " 한-아세안 FTA 및 CEPA"]
     ]
     return pd.DataFrame(dummy_tariff, columns=["대륙", "국가", "HSCode", "품목", "기본세율", "FTA세율", "할당관세", "최종세율", "비고"])
 
@@ -188,7 +188,7 @@ def show():
     st.divider()
     
     # 탭 구성
-    tab1, tab2, tab3, tab4 = st.tabs(["📊 수입 통계", "🔍 관세 조회", "🛡️ 컴플라이언스", " 공급망 리밸런싱"])
+    tab1, tab2, tab3, tab4 = st.tabs([" 수입 통계", " 관세 조회", " 컴플라이언스", " 공급망 리밸런싱"])
     
     # ===========================================
     # TAB 1: 수입 통계 분석
@@ -198,10 +198,10 @@ def show():
         
         with f_col1:
             year_opts = ["10개년 평균"] + sorted([y for y in df_import['Year'].unique() if y != "10개년 평균"], reverse=True)
-            selected_year = st.selectbox("📅 분석 연도", options=year_opts, key="intel_year")
+            selected_year = st.selectbox(" 분석 연도", options=year_opts, key="intel_year")
             
         with f_col2:
-            selected_region = st.multiselect("📍 대륙", ["남미", "아시아", "아프리카"], default=["남미", "아시아", "아프리카"], key="intel_region")
+            selected_region = st.multiselect(" 대륙", ["남미", "아시아", "아프리카"], default=["남미", "아시아", "아프리카"], key="intel_region")
         
         st.divider()
         
@@ -217,14 +217,14 @@ def show():
         
         c1, c2 = st.columns([1.5, 1])
         with c1:
-            st.markdown(f"<h4 style='color:{COLOR_SECONDARY};'>🌍 {selected_year} 국가별 수입 비중</h4>", unsafe_allow_html=True)
+            st.markdown(f"<h4 style='color:{COLOR_SECONDARY};'> {selected_year} 국가별 수입 비중</h4>", unsafe_allow_html=True)
             fig = px.pie(f_import, values='Import_Qty', names='Country', hole=0.6, color_discrete_sequence=COFFEE_PALETTE)
             fig.update_traces(textinfo='percent+label')
             fig.update_layout(margin=dict(t=20, b=20, l=0, r=0), legend=dict(orientation="h", y=-0.1))
             st.plotly_chart(fig, use_container_width=True)
 
         with c2:
-            st.markdown(f"<h4 style='color:{COLOR_SECONDARY};'>📊 실측 데이터</h4>", unsafe_allow_html=True)
+            st.markdown(f"<h4 style='color:{COLOR_SECONDARY};'> 실측 데이터</h4>", unsafe_allow_html=True)
             st.dataframe(
                 f_import[['Country', 'Import_Qty', 'Value_USD', 'Region']].sort_values("Import_Qty", ascending=False),
                 column_config={
@@ -238,12 +238,12 @@ def show():
     # TAB 2: 관세 조회
     # ===========================================
     with tab2:
-        st.markdown("### 🔍 공급망 권고안")
+        st.markdown("###  공급망 권고안")
         
         sl, sr = st.columns(2)
         with sl:
             st.success("""
-            **🛡️ 안정적 파트너 (FTA 그룹)**
+            ** 안정적 파트너 (FTA 그룹)**
             
             온두라스, 코스타리카, 콜롬비아, 페루, 에티오피아, 베트남, 인도네시아
             
@@ -251,7 +251,7 @@ def show():
             """)
         with sr:
             st.warning("""
-            **⚡ 기회 포착 파트너 (할당관세 그룹)**
+            ** 기회 포착 파트너 (할당관세 그룹)**
             
             과테말라, 브라질, 케냐
             
@@ -266,7 +266,7 @@ def show():
         k3.metric("평균 최종세율", f"{df_tariff['최종세율'].mean():.1f}%")
         k4.metric("최고 기본세율", f"{df_tariff['기본세율'].max()}%")
 
-        st.markdown("#### 📋 전체 국가 관세 현황")
+        st.markdown("####  전체 국가 관세 현황")
         st.dataframe(df_tariff, use_container_width=True, hide_index=True)
 
     # ===========================================
@@ -279,7 +279,7 @@ def show():
         col_input, col_info = st.columns([1, 1.8])
 
         with col_input:
-            st.markdown("#### 🌍 분석 국가 선택")
+            st.markdown("####  분석 국가 선택")
             sort_option = st.radio("목록 정렬", ["이름순", "위험도순"], horizontal=True, key="comp_sort")
             
             display_df = df_reg.sort_values("Country" if sort_option == "이름순" else "Risk_Level", ascending=(sort_option == "이름순") if sort_option == "이름순" else False)
@@ -297,7 +297,7 @@ def show():
             """, unsafe_allow_html=True)
 
         with col_info:
-            st.markdown(f"#### 📜 {target_country} 체크리스트")
+            st.markdown(f"####  {target_country} 체크리스트")
             
             checks = [
                 ("환경 리스크", country_info['EUDR_Risk'], "EUDR 산림파괴 방지 규제"),
@@ -314,12 +314,12 @@ def show():
                 </div>
                 """, unsafe_allow_html=True)
             
-            with st.spinner(f"🤖 AI가 {target_country} 분석 중..."):
+            with st.spinner(f" AI가 {target_country} 분석 중..."):
                 ai_advice = get_ai_compliance_summary(target_country)
             
             st.markdown(f"""
             <div style="background:#F5F5F5; padding:20px; border-radius:12px; border-left:5px solid {COLOR_PRIMARY}; margin-top:16px;">
-                <strong>🤖 AI 수입 전략 어드바이저</strong><br>
+                <strong> AI 수입 전략 어드바이저</strong><br>
                 {ai_advice}
             </div>
             """, unsafe_allow_html=True)
@@ -328,17 +328,17 @@ def show():
     # TAB 4: 공급망 리밸런싱
     # ===========================================
     with tab4:
-        st.markdown("<h2>🌍 AI 기반 공급망 리밸런싱</h2>", unsafe_allow_html=True)
+        st.markdown("<h2> AI 기반 공급망 리밸런싱</h2>", unsafe_allow_html=True)
         st.caption("RCP 8.5 시나리오 분석: 2025년 대비 미래 산지 생산성 변화 예측")
 
         raw_data = get_rebalancing_data()
         
-        st.markdown("### 📅 예측 시점 설정")
+        st.markdown("###  예측 시점 설정")
         selected_year = st.slider("연도 조절", 2025, 2050, 2050, key="rebal_year")
         
         df_re = run_rebalancing_sim(raw_data, selected_year)
 
-        st.subheader(f"📈 {selected_year}년 국가별 생산성 변동률 예측")
+        st.subheader(f" {selected_year}년 국가별 생산성 변동률 예측")
         
         fig = px.bar(
             df_re.sort_values("Climate_Impact"),
@@ -355,7 +355,7 @@ def show():
         col_sel, col_val = st.columns([1, 1.4])
 
         with col_sel:
-            st.markdown(f"### 🎯 {selected_year} 전략 국가 분석")
+            st.markdown(f"###  {selected_year} 전략 국가 분석")
             target = st.selectbox("국가 선택", df_re['Country'].tolist(), key="rebal_country")
             c_info = df_re[df_re['Country'] == target].iloc[0]
             
@@ -371,23 +371,23 @@ def show():
             """, unsafe_allow_html=True)
 
         with col_val:
-            st.markdown("### 🚀 리밸런싱 액션 가이드")
+            st.markdown("###  리밸런싱 액션 가이드")
             
             st.success("""
-            **🛡️ 아프리카 공급망 거점 강화**
+            ** 아프리카 공급망 거점 강화**
             
             탄자니아 & 우간다 - 동아프리카 고산지대는 기후 변화의 최대 수혜지입니다.
             현지 농장 선점 및 선제적 파트너십 구축이 시급합니다.
             """)
             
             st.warning("""
-            **⚡ 동아시아 물류 허브 선점**
+            ** 동아시아 물류 허브 선점**
             
             중국 윈난 - 지리적 이점과 탄소 규제 대응을 위해 '차세대 전략 엔진'으로 격상하십시오.
             """)
             
             st.info(f"""
-            **📉 고위험 산지 의존도 분산**
+            ** 고위험 산지 의존도 분산**
             
             기온 상승 직격탄을 받는 저지대 의존도를 {selected_year}년까지 점진적 축소하고
             안정적 고산지 포트폴리오로 재편하십시오.

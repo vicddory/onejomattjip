@@ -205,7 +205,7 @@ def show():
     if 'korea_news' not in st.session_state:
         st.session_state['korea_news'] = []
 
-    tab1, tab2, tab3 = st.tabs(["🌍 글로벌 리스크", "🌱 산지별 동향", "🇰🇷 국내 시장"])
+    tab1, tab2, tab3 = st.tabs([" 글로벌 리스크", " 산지별 동향", " 국내 시장"])
 
     # ===========================================
     # Tab 1: 글로벌 리스크
@@ -288,7 +288,7 @@ def show():
             for i, item in enumerate(st.session_state['korea_news']):
                 with st.container():
                     st.markdown(f"**{i+1}. {item['제목']}**")
-                    st.caption(f"📅 {item['게시일']}")
+                    st.caption(f" {item['게시일']}")
                     st.markdown(f"[기사 원문 읽기]({item['링크']})")
                     st.divider()
 

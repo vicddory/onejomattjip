@@ -43,7 +43,7 @@ def show():
     col1, col2 = st.columns([1, 1])
     
     with col1:
-        st.markdown("##### 🌐 실시간 환율 정보")
+        st.markdown("#####  실시간 환율 정보")
         
         # 현재 적용된 환율 표시
         if st.session_state['cost_exchange_source'] == 'api' and st.session_state['cost_api_rate']:
@@ -60,7 +60,7 @@ def show():
         )
         
         # 실시간 환율 가져오기 버튼
-        if st.button("🔄 실시간 환율 갱신", use_container_width=True, type="primary", key="cost_rate_btn"):
+        if st.button(" 실시간 환율 갱신", use_container_width=True, type="primary", key="cost_rate_btn"):
             with st.spinner("환율 서버 접속 중..."):
                 rate, msg = get_exchange_rate_with_status()
                 if rate:
@@ -87,7 +87,7 @@ def show():
         )
         
         # 수동 입력 적용 버튼
-        if st.button("✅ 적용", use_container_width=True, type="primary", key="apply_manual_rate"):
+        if st.button(" 적용", use_container_width=True, type="primary", key="apply_manual_rate"):
             st.session_state['cost_manual_rate'] = manual_rate
             st.session_state['cost_exchange_source'] = 'manual'
             st.success(f"수동 환율 적용: {manual_rate:,.2f} 원/USD")
@@ -121,7 +121,7 @@ def show():
         if selected_code in ["EXW", "FOB"]:
             f_value = st.number_input("② 국제운송비 (Freight, USD)", min_value=0.0, value=0.0, format="%.2f", key="cost_freight")
         else:
-            st.info(f"💡 {selected_code} 조건은 운임이 물품대금에 포함되어 있습니다.")
+            st.info(f" {selected_code} 조건은 운임이 물품대금에 포함되어 있습니다.")
         
         # ③ 보험료 (조건부)
         i_value_krw = 0.0
@@ -131,7 +131,7 @@ def show():
                 label += " (선택: 0 가능)"
             i_value_krw = st.number_input(label, min_value=0, value=0, step=1000, format="%d", key="cost_insurance")
         else:
-            st.info(f"💡 {selected_code} 조건은 보험료가 물품대금에 포함되어 있습니다.")
+            st.info(f" {selected_code} 조건은 보험료가 물품대금에 포함되어 있습니다.")
 
         c1, c2 = st.columns(2)
         with c1:
@@ -142,7 +142,7 @@ def show():
     # ===========================================
     # 계산 및 결과
     # ===========================================
-    if st.button("💰 계산 결과 보기", type="primary", use_container_width=True, key="cost_calc_btn"):
+    if st.button(" 계산 결과 보기", type="primary", use_container_width=True, key="cost_calc_btn"):
         
         # 계산 로직
         usd_portion = p_value + f_value
@@ -166,14 +166,14 @@ def show():
         st.subheader(f"📊 [{selected_code}] 최종 원가 분석")
         
         k1, k2, k3 = st.columns(3)
-        k1.metric("💵 총 필요 자금", f"{int(total_krw):,} 원", delta="Total Cost")
-        k2.metric("💸 예상 세금 (관세+부가세)", f"{int(duty_amt + vat_amt):,} 원")
-        k3.metric("📦 과세가격 (CIF)", f"{int(cif_krw):,} 원", help="관세청 신고 기준 가격")
+        k1.metric(" 총 필요 자금", f"{int(total_krw):,} 원", delta="Total Cost")
+        k2.metric(" 예상 세금 (관세+부가세)", f"{int(duty_amt + vat_amt):,} 원")
+        k3.metric(" 과세가격 (CIF)", f"{int(cif_krw):,} 원", help="관세청 신고 기준 가격")
 
         st.caption(f"※ 적용 환율: {exchange_rate:,.2f} 원/USD | 보험료는 원화({int(i_value_krw):,}원) 그대로 합산")
         
         # 결과 테이블
-        st.markdown("### 📋 상세 비용 분석표")
+        st.markdown("###  상세 비용 분석표")
         df = pd.DataFrame({
             "항목": ["물품대금(Price)", "국제운송비(Freight)", "보험료(Insurance)", "과세가격(CIF)", "관세(Duty)", "부가세(VAT)", "국내비용(Local)"],
             "외화 (USD)": [
@@ -199,7 +199,7 @@ def show():
         # 엑셀 다운로드
         # ===========================================
         st.divider()
-        st.markdown("### 📥 결과 다운로드")
+        st.markdown("###  결과 다운로드")
         
         output = io.BytesIO()
 
@@ -259,11 +259,11 @@ def show():
                 row += 1
             
             row += 1
-            worksheet.write(row, 0, '💵 총 필요 자금', header_format)
+            worksheet.write(row, 0, ' 총 필요 자금', header_format)
             worksheet.write(row, 2, f"{int(total_krw):,}원", total_format)
             
             row += 1
-            worksheet.write(row, 0, '💸 예상 세금', header_format)
+            worksheet.write(row, 0, ' 예상 세금', header_format)
             worksheet.write(row, 2, f"{int(duty_amt + vat_amt):,}원", total_format)
 
         output.seek(0)
@@ -271,7 +271,7 @@ def show():
         download_col1, download_col2 = st.columns(2)
         with download_col1:
             st.download_button(
-                label="📄 엑셀 파일 다운로드",
+                label=" 엑셀 파일 다운로드",
                 data=output,
                 file_name=f"Import_Cost_Analysis_{selected_code}.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

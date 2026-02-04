@@ -260,7 +260,7 @@ def show():
             st.rerun()
     
     with col3:
-        st.markdown("##### 🌍 국가 선택")
+        st.markdown("#####  국가 선택")
         
         # 국가 선택
         sorted_countries = sorted(list(data.keys()))

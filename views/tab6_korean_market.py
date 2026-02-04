@@ -58,36 +58,36 @@ def show():
     
     df = load_data()
     
-    st.title("☕ 대한민국 커피 수입 : 규모와 속도 분리 분석")
+    st.title(" 대한민국 커피 수입 : 규모와 속도 분리 분석")
     st.markdown("---")
 
     # 1. 수입 규모 분석
-    st.subheader("1️⃣ 수입 규모 (수입량 & 수입액)")
+    st.subheader("1️ 수입 규모 (수입량 & 수입액)")
     st.caption("연도별 실제 수입된 물량과 금액의 크기입니다.")
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown("**📦 연도별 수입량 (톤)**")
+        st.markdown("** 연도별 수입량 (톤)**")
         fig_vol = px.bar(df, x='연도', y='수입량(톤)', text='수입량(톤)', color_discrete_sequence=['#8D6E63'])
         fig_vol.update_traces(texttemplate='%{text:,}', textposition='outside')
         fig_vol.update_layout(yaxis_showgrid=False)
         st.plotly_chart(fig_vol, use_container_width=True)
 
     with col2:
-        st.markdown("**💰 연도별 수입액 (백만달러)**")
+        st.markdown("** 연도별 수입액 (백만달러)**")
         fig_val = px.bar(df, x='연도', y='수입액(백만달러)', text='수입액(백만달러)', color_discrete_sequence=['#D4AC0D'])
         fig_val.update_traces(texttemplate='$%{text:,}', textposition='outside')
         fig_val.update_layout(yaxis_showgrid=False)
         st.plotly_chart(fig_val, use_container_width=True)
 
-    with st.expander("🔽 수입 규모 데이터 상세 보기"):
+    with st.expander(" 수입 규모 데이터 상세 보기"):
         st.dataframe(df[['연도', '수입량(톤)', '수입액(백만달러)']], use_container_width=True)
 
     st.markdown("---")
 
     # 2. 증가율 분석
-    st.subheader("2️⃣ 전년 대비 증가율 (변동 추이)")
+    st.subheader("2️ 전년 대비 증가율 (변동 추이)")
     st.caption("작년보다 얼마나 늘었거나 줄었는지 보여줍니다.")
 
     chart_df = df.dropna(subset=['수입량 증가율(%)', '수입액 증가율(%)'])
@@ -110,19 +110,19 @@ def show():
 
     fig_rate.add_hline(y=0, line_width=1, line_dash="solid", line_color="black")
     fig_rate.update_layout(
-        title="📈 수입량 vs 수입액 증가율 비교",
+        title=" 수입량 vs 수입액 증가율 비교",
         yaxis_title="증가율 (%)", hovermode="x unified",
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
     )
     st.plotly_chart(fig_rate, use_container_width=True)
 
-    with st.expander("🔽 증가율 데이터 상세 보기"):
+    with st.expander(" 증가율 데이터 상세 보기"):
         st.dataframe(chart_df[['연도', '수입량 증가율(%)', '수입액 증가율(%)']], use_container_width=True)
     
     st.markdown("---")
 
     # 3. 주요 인사이트
-    st.subheader("3️⃣ 주요 인사이트")
+    st.subheader("3️ 주요 인사이트")
     
     latest = df.iloc[-1]
     prev = df.iloc[-2]
@@ -143,7 +143,7 @@ def show():
     
     st.markdown("""
     <div style="background-color: #FFF8E1; padding: 20px; border-radius: 10px; border-left: 5px solid #FFC107; margin-top: 20px;">
-        <h4 style="margin-top: 0; color: #6F4E37;">📊 데이터 해석</h4>
+        <h4 style="margin-top: 0; color: #6F4E37;"> 데이터 해석</h4>
         <ul style="color: #333;">
             <li><b>수입량</b>: 물리적으로 얼마나 많은 커피가 들어왔는지 (수요 추세)</li>
             <li><b>수입액</b>: 얼마를 지불했는지 (가격 변동 + 수량 변동 복합)</li>
