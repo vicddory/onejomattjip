@@ -6,6 +6,7 @@
 
 🚀 실행 방법:
     streamlit run main.py
+    jhhh
 
 📌 이 파일이 하는 일:
     1. Streamlit 페이지 설정 (st.set_page_config) - 반드시 최상단에 1번만!
