@@ -1,0 +1,46 @@
+# ================================================================================
+# 📁 requirements.txt - Coffee Trade Hub 의존성 패키지
+# ================================================================================
+# 
+# 설치 방법:
+#   pip install -r requirements.txt
+#
+# ================================================================================
+
+# === 핵심 프레임워크 ===
+streamlit>=1.31.0
+
+# === 데이터 처리 ===
+pandas>=2.1.0
+numpy
+
+# === 시각화 ===
+plotly>=5.18.0
+matplotlib
+folium
+streamlit-folium
+wordcloud
+
+# === 지도 및 UI ===
+streamlit-option-menu    # 사이드바 메뉴용
+
+# === API 및 네트워크 ===
+requests
+yfinance                 # 주식/환율 데이터
+python-dotenv            # 환경변수 관리
+
+# === 뉴스 및 번역 ===
+feedparser               # RSS 파싱
+deep-translator          # 번역
+newspaper3k              # 뉴스 기사 파싱
+lxml_html_clean          # [추가됨] newspaper3k 에러 방지용 필수 라이브러리
+nltk                     # 자연어 처리
+textblob                 # 감성 분석
+
+# === AI/OpenAI ===
+openai                   # GPT API
+
+# === 문서 생성 ===
+reportlab                # PDF 생성
+openpyxl                 # Excel 생성/수정
+xlsxwriter               # Excel 고급 기능
